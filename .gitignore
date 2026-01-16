@@ -1,0 +1,10 @@
+
+# Data
+/data/
+
+# Models
+/models/
+
+# PyCache
+__pycache__/
+*.py[cod]
