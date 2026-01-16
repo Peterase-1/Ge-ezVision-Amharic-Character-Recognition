@@ -231,12 +231,21 @@ The `DeepAmharicNet` posted exceptional results.
 *   **Final Validation Accuracy**: **87.79%**
 *   **Final Test Accuracy**: **88.32%**
 
+![Training Progression Curve](../reports/figures/training_curve.png)
+*Figure 4.1: Training Accuracy Progression over epochs. Note the rapid convergence in the first 5 epochs.*
+
 | Epoch | Metric | Value | Interpretation |
 | :--- | :--- | :--- | :--- |
 | **1** | Accuracy | 5.75% | Model is learning basic edges/contrast. |
 | **5** | Accuracy | 78.2% | Model has learned the majority of distinct shapes. |
 | **7** | Accuracy | 87.3% | Model is refining details (dots, dashes). |
 | **20** | Accuracy | **88.3%** | Model has converged. |
+
+### 4.3.3 Qualitative Results
+Below is a sample of predictions on unseen test data. The model correctly identifies most characters (Green), with occasional errors (Red).
+
+![Sample Predictions](../reports/figures/sample_predictions.png)
+*Figure 4.2: Random sample of test set predictions. Green titles indicate correct predictions, Red indicates errors.*
 
 ## 4.4 Discussion
 The improvement of **+72%** (from 16% to 88%) confirms our hypothesis:
@@ -248,6 +257,9 @@ The improvement of **+72%** (from 16% to 88%) confirms our hypothesis:
 Analysis of the Confusion Matrix revealed:
 *   **Strengths**: The model is near-perfect (>95%) on visually distinct characters like 'መ' (Me) or 'ረ' (Re).
 *   **Weaknesses**: The majority of errors come from the "1st vs 4th" orders (e.g., 'ሀ' vs 'ሃ') which are often written identically in handwriting. This suggests that 88% is approaching the "human baseline" for isolated characters without context.
+
+![Confusion Matrix](../reports/figures/confusion_matrix.png)
+*Figure 4.3: Confusion Matrix Heatmap (238x238). The strong diagonal line indicates high classification accuracy across all classes.*
 
 ## 4.6 Summary
 The experimental results are conclusive. deep CNNs are highly effective for Amharic handwriting recognition. We successfully transformed a model that was guessing randomly into a robust classifier suitable for real-world prototyping.
