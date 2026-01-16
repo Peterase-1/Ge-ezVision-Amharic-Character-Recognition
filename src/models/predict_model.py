@@ -7,14 +7,14 @@ import argparse
 
 # Add current directory to path so we can import model
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from src.models.model import SimpleCNN
+from src.models.model import DeepAmharicNet
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MODEL_PATH = 'models/amharic_cnn.pth'
 INDEX_FILE = 'data/processed/dataset_index.csv'
 
 def load_model(model_path, num_classes=238):
-    model = SimpleCNN(num_classes=num_classes)
+    model = DeepAmharicNet(num_classes=num_classes)
     if os.path.exists(model_path):
         model.load_state_dict(torch.load(model_path, map_location=DEVICE, weights_only=True))
         model.to(DEVICE)

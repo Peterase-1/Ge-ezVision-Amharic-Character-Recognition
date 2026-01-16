@@ -14,7 +14,7 @@ import numpy as np
 # Imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from src.models.dataset import AmharicDataset
-from src.models.model import SimpleCNN
+from src.models.model import DeepAmharicNet
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MODEL_PATH = 'models/amharic_cnn.pth'
@@ -33,7 +33,7 @@ def evaluate():
     
     # 2. Load Model
     print("Loading Model...")
-    model = SimpleCNN(num_classes=238).to(DEVICE)
+    model = DeepAmharicNet(num_classes=238).to(DEVICE)
     if os.path.exists(MODEL_PATH):
         model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE, weights_only=True))
     else:

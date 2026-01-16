@@ -8,40 +8,45 @@ from tqdm import tqdm
 
 # Import our custom modules
 from dataset import AmharicDataset
-from model import SimpleCNN
+from model import DeepAmharicNet  # UPDATED: Import DeepAmharicNet
 
 # --- Configuration ---
-BATCH_SIZE = 32
+BATCH_SIZE = 64 # Increased batch size for stability
 LEARNING_RATE = 0.001
-EPOCHS = 5 # Number of times to show the whole dataset to the AI
+EPOCHS = 20 # Increased epochs
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {DEVICE}")
 
 def train():
     # 1. Prepare Data
-    print("Loading Data...")
+    print("Loading Data with Augmentation...")
     
-    # Transformations: Convert to Tensor and Normalize (scale usually between 0-1 or -1 to 1)
-    transform = transforms.Compose([
-        transforms.ToTensor(), # Converts 0-255 image to 0.0-1.0 tensor
+    # Train Transform: Add Noise/Rotation to generalize better
+    train_transform = transforms.Compose([
+        transforms.RandomRotation(10), # Rotate +/- 10 degrees
+        transforms.RandomAffine(0, translate=(0.1, 0.1)), # Shift image slightly
+        transforms.ToTensor(), 
     ])
     
-    # Load Train and Validation sets
+    # Val Transform: Just standard conversion
+    val_transform = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+    
     train_dataset = AmharicDataset(
         csv_file='data/processed/dataset_index.csv',
         root_dir='.',
         split='train',
-        transform=transform
+        transform=train_transform # User augmented transform
     )
     
     val_dataset = AmharicDataset(
         csv_file='data/processed/dataset_index.csv',
         root_dir='.',
         split='val',
-        transform=transform
+        transform=val_transform
     )
     
-    # DataLoaders shuffle and batch the data
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
     
@@ -49,11 +54,14 @@ def train():
     print(f"Validation samples: {len(val_dataset)}")
     
     # 2. Initialize Model
-    model = SimpleCNN(num_classes=238).to(DEVICE)
+    model = DeepAmharicNet(num_classes=238).to(DEVICE) # UPDATED: Use DeepAmharicNet
     
-    # 3. Define Loss Function and Optimizer
-    criterion = nn.CrossEntropyLoss() # Standard for classification
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE) # 'Smart' gradient descent
+    # 3. Optimizer & Scheduler
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    
+    # Reduce LR if validation loss doesn't improve for 2 epochs
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2)
     
     # 4. Training Loop
     best_acc = 0.0
@@ -63,7 +71,7 @@ def train():
         print("-" * 10)
         
         # --- TRAIN PHASE ---
-        model.train() # Set to training mode
+        model.train()
         running_loss = 0.0
         correct = 0
         total = 0
@@ -73,18 +81,12 @@ def train():
         for images, labels in progress_bar:
             images, labels = images.to(DEVICE), labels.to(DEVICE)
             
-            # Zero the parameter gradients
             optimizer.zero_grad()
-            
-            # Forward pass
             outputs = model(images)
             loss = criterion(outputs, labels)
-            
-            # Backward pass (Learning)
             loss.backward()
             optimizer.step()
             
-            # Statistics
             running_loss += loss.item()
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
@@ -97,15 +99,14 @@ def train():
         print(f"Train Loss: {avg_train_loss:.4f} | Train Acc: {train_acc:.2f}%")
         
         # --- VALIDATION PHASE ---
-        model.eval() # Set to evaluation mode (no dropout)
+        model.eval()
         val_loss = 0.0
         val_correct = 0
         val_total = 0
         
-        with torch.no_grad(): # Don't calculate gradients (saves memory)
+        with torch.no_grad():
             for images, labels in val_loader:
                 images, labels = images.to(DEVICE), labels.to(DEVICE)
-                
                 outputs = model(images)
                 loss = criterion(outputs, labels)
                 
@@ -118,10 +119,13 @@ def train():
         avg_val_loss = val_loss / len(val_loader)
         print(f"Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.2f}%")
         
+        # Step Scheduler
+        scheduler.step(avg_val_loss)
+        
         # Save Best Model
         if val_acc > best_acc:
             best_acc = val_acc
-            save_path = 'models/amharic_cnn.pth'
+            save_path = 'models/amharic_cnn.pth' # Overwrite previous model
             if not os.path.exists('models'):
                 os.makedirs('models')
             torch.save(model.state_dict(), save_path)
