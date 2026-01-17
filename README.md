@@ -11,7 +11,7 @@ Detailed documentation for each phase of the project is available here:
 *   **[Phase 3 Report](docs/phase_3_report.md)**: Evaluation and Refinement.
 
 ## Key Features
--   **Dataset**: 37,652 images of 238 unique Amharic characters (Source: Fetulhak Abdurahman).
+-   **Dataset**: 37,652 images of 238 unique Amharic characters (Source: [Fetulhak - Handwritten Amharic Character Dataset](https://github.com/Fetulhak/Handwritten-Amharic-character-Dataset)).
 -   **Architecture**: Custom "DeepAmharicNet" (PyTorch) - 4-layer Deep CNN with Batch Norm and Dropout.
 -   **Pipeline**: Automated scripts for data preprocessing, training (with Augmentation), and evaluation.
 
