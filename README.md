@@ -3,6 +3,13 @@
 ## Overview
 This project is an end-to-end Machine Learning system designed to recognize handwritten Amharic characters. It processes raw images, trains a Deep Convolutional Neural Network (CNN), and provides tools for evaluation and prediction.
 
+## Project Documentation
+Detailed documentation for each phase of the project is available here:
+*   **[Final Project Documentation (Full Report)](docs/Final_Project_Documentation.md)**: The complete, professional documentation covering the entire lifecycle.
+*   **[Phase 1 Report](docs/phase_1_report.md)**: Project Proposal and Data Collection.
+*   **[Phase 2 Report](docs/phase_2_report.md)**: Baseline Modeling.
+*   **[Phase 3 Report](docs/phase_3_report.md)**: Evaluation and Refinement.
+
 ## Key Features
 -   **Dataset**: 37,652 images of 238 unique Amharic characters (Source: Fetulhak Abdurahman).
 -   **Architecture**: Custom "DeepAmharicNet" (PyTorch) - 4-layer Deep CNN with Batch Norm and Dropout.
@@ -11,7 +18,11 @@ This project is an end-to-end Machine Learning system designed to recognize hand
 ## Project Structure
 ```
 ├── data/               # Raw and processed datasets
-├── docs/               # Phase reports (1, 2, 3)
+├── docs/               # Documentation
+│   ├── [Phase 1 Report](docs/phase_1_report.md)
+│   ├── [Phase 2 Report](docs/phase_2_report.md)
+│   ├── [Phase 3 Report](docs/phase_3_report.md)
+│   └── [Final Project Documentation](docs/Final_Project_Documentation.md)
 ├── models/             # Saved model artifacts (.pth)
 ├── notebooks/          # EDA and Evaluation notebooks
 ├── reports/            # Generated metrics (Confusion Matrix, etc.)
