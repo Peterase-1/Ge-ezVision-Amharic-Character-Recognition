@@ -16,25 +16,24 @@
 
 ---
 
-# CHAPTER ONE: INTRODUCTION
+# CHAPTER ONE
+## 1. INTRODUCTION
 
-## 1.1 Background
+### 1.1. Background
 In the current "Age of AI," nations utilize Artificial Intelligence to drive economic and social progress. For Ethiopia to benefit from and participate in this Global AI revolution, it is imperative to train AI systems using **Local Data**. However, a significant bottleneck exists: the majority of Ethiopia's institutional knowledge—including Government records, Organizational archives, medical history, and legal documents—remains written on paper.
 
 While the developed world has moved to "Big Data," Ethiopia currently faces a data accessibility crisis. There is no large-scale, digitized corpus available for developing advanced technologies like **Large Language Models (LLMs)** for Amharic. As long as this data remains locked in physical format, future AI developement in the country is stalled.
 
 This project, "Ge-ezVision", addresses this critical infrastructure gap. By developing a robust Optical Character Recognition (OCR) system using **Deep Convolutional Neural Networks (CNNs)**, we provide the technological key to unlock these physical archives. This is not merely a character recognition tool; it is a foundational step toward mass digitization, enabling the generation of the massive datasets required to build the next generation of Ethiopian AI.
 
-## 1.2 Motivation
+### 1.2. Motivation
 The primary motivation for this research is to enable **Data Sovereignty and Future AI Development** in Ethiopia.
 1.  **Enabling Future LLMs**: Modern AI (like GPT-4) requires billions of tokens of text training data. Currently, Amharic lacks this volume of digital text. By automating the conversion of paper records to text, we create the raw material needed to train future Amharic LLMs.
 2.  **Digitizing Institutional Memory**: Government and private organizations in Ethiopia hold decades of data on paper. Digitizing this improves efficiency, transparency, and ensures that vital national statistics are machine-readable.
 3.  **Cultural & Historical Preservation**: Preserving manuscripts and historical records in a digital text format ensures they are searchable and accessible to future generations, preventing the loss of heritage due to physical decay.
 4.  **Accessibility**: Converting handwritten text to digital text allows assistive technologies (like Screen Readers) to serve the visually impaired, promoting digital inclusivity.
 
-Developing an accurate, open-source model for Amharic handwriting is therefore a critical infrastructure project for the country's digital future.
-
-## 1.3 Statement of the problem
+### 1.3. Statement of the problem
 Recognizing handwritten Amharic characters presents a unique set of computational challenges that standard "out-of-the-box" models often fail to address:
 1.  **Visual Similarity (Inter-class Similarity)**: The Ge'ez script has high visual correlation. For example, the character 'በ' (Be) and 'ቤ' (Bie) differ only by a subtle vertical dash. 'ፀ' (Tse) and 'ፅ' (Tso) are mirror-like. Shallow models cannot distinguish these fine-grained features.
 2.  **The Curse of Dimensionality**: Classification complexity grows with the number of classes. With 238 classes, the decision boundary is far more complex than the 10-class MNIST (Digits) or 26-class EMNIST (English) problems.
@@ -42,25 +41,25 @@ Recognizing handwritten Amharic characters presents a unique set of computationa
 
 The problem this study addresses is the lack of a high-accuracy, noise-robust automated system for identifying this large set of complex characters.
 
-## 1.4 Objectives
+### 1.4. Objectives
 
-### 1.4.1 General Objective
+#### 1.4.1. General Objective
 The overarching goal of this project is to research, design, develop, and test a Deep Learning-based system capable of recognizing isolated handwritten Amharic characters with a validation accuracy exceeding 85%, suitable for deployment in digitization workflows.
 
-### 1.4.2 Specific objectives
+#### 1.4.2. Specific objectives
 To achieve the general objective, the following specific mile-stones were set:
 1.  **Data Acquisition**: To acquire and clean the "Fetulhak Abdurahman" dataset, ensuring it is balanced and free of corrupt files.
 2.  **Architecture Design**: To construct a custom Deep CNN (`DeepAmharicNet`) with specific layers (Convolution, Batch Normalization, Dropout) tailored to the feature density of Amharic characters.
 3.  **Robustness Enhancement**: To implement "Data Augmentation" pipelines that mathematically perturb training images (rotation, shifting) to force the model to learn invariant features.
 4.  **Evaluation**: To rigorously test the model using identifying metrics including Confusion Matrices, F1-Scores, and Top-K Accuracy to understand failure cases.
 
-## 1.5 Significance of the study
+### 1.5. Significance of the study
 The successful completion of Ge-ezVision has significant implications:
 *   **Academic**: It serves as a benchmark for future researchers applying Deep Learning to African scripts, demonstrating effective hyperparameters and architecture choices.
 *   **Practical**: It provides a pre-trained model artifact (`.pth` file) that software developers can immediately integrate into Android Apps or Web Services for OCR.
 *   **Social**: It promotes the use of indigenous languages in the digital sphere, preventing the technological marginalization of the Amharic language.
 
-## 1.6 Scope and limitations
+### 1.6. Scope and limitations
 **Scope**:
 *   The study is limited to **Offline OCR** (processing static images), not Online OCR (tracking stylus movement).
 *   It covers the **238 basic characters** commonly used in modern Amharic.
@@ -70,7 +69,7 @@ The successful completion of Ge-ezVision has significant implications:
 *   **Background Noise**: The model is trained on relatively clean backgrounds. It may struggle with paper that has heavy stains or ruled lines.
 *   **Cursive Writing**: While Amharic is not typically cursive, connected handwriting styles may pose segmentation challenges not addressed here.
 
-## 1.7 Methodology (Overview)
+### 1.7. Methodology
 The methodology follows the **CRISP-DM** (Cross-Industry Standard Process for Data Mining) model modified for Deep Learning:
 1.  **Data**: Ingestion of 37,000+ images.
 2.  **Preprocessing**: Resizing to 32x32 pixels, Grayscale conversion (1 channel), and Normalization (0-1 range).
@@ -143,7 +142,7 @@ The foundation of any AI project is data. We utilized the **Fetulhak Abdurahman 
 ## 3.3 System Architecture / Framework
 The core contribution is the **`DeepAmharicNet`**, implemented in PyTorch.
 
-### 3.3.1 The Architecture
+### The Architecture
 The network is a stack of 4 identical "Residual-style" blocks followed by a classifier.
 *   **Input**: 1x32x32 Grayscale Image.
 *   **Block 1**: 32 Filters (3x3 Kernel). Detects rudimentary edges.
@@ -161,15 +160,15 @@ The network is a stack of 4 identical "Residual-style" blocks followed by a clas
 
 ## 3.4 Algorithms and Techniques
 
-### 3.4.1 Learning Algorithm: Adam
+### Learning Algorithm: Adam
 We used the **Adam (Adaptive Moment Estimation)** optimizer. Unlike standard SGD, Adam maintains a per-parameter learning rate. This is crucial for our high-dimensional problem where some weights (rare features) need to update faster than others (common features).
 
-### 3.4.2 Loss Function: Cross Entropy
+### Loss Function: Cross Entropy
 We minimized the **Cross Entropy Loss**:
 $$ Loss = - \sum (y_{actual} \cdot \log(y_{predicted})) $$
 This penalizes the model heavily when it is confident but wrong, forcing it to learn distinct decision boundaries.
 
-### 3.4.3 Data Augmentation
+### Data Augmentation
 To solve the data scarcity problem, we expanded the dataset synthetically during training:
 *   `RandomRotation(10)`: Rotates image $\pm 10$ degrees.
 *   `RandomAffine`: Shifts image horizontally/vertically by 10%.
@@ -220,13 +219,13 @@ Experiments were conducted on a standard workstation:
 
 ## 4.3 Results
 
-### 4.3.1 Phase 2 Baseline Results
+### Phase 2 Baseline Results
 The `SimpleCNN` (2 layers, no batch norm) struggled significantly.
 *   **Train Accuracy**: ~3.75%
 *   **Validation Accuracy**: 16.21%
 *   **Analysis**: The model was "underfitting". It simply did not have the complexity to model the data. It learned simple shapes but failed on specific characters.
 
-### 4.3.2 Phase 4 Optimized Results
+### Phase 4 Optimized Results
 The `DeepAmharicNet` posted exceptional results.
 *   **Final Validation Accuracy**: **87.79%**
 *   **Final Test Accuracy**: **88.32%**
@@ -241,7 +240,7 @@ The `DeepAmharicNet` posted exceptional results.
 | **7** | Accuracy | 87.3% | Model is refining details (dots, dashes). |
 | **20** | Accuracy | **88.3%** | Model has converged. |
 
-### 4.3.3 Qualitative Results
+### Qualitative Results
 Below is a sample of predictions on unseen test data. The model correctly identifies most characters (Green), with occasional errors (Red).
 
 ![Sample Predictions](../reports/figures/sample_predictions.png)
